@@ -1,0 +1,88 @@
+const linkGnirator = function (link, file, params) {  
+    var pramsText = ""
+    if (typeof params === 'object') {
+    var str = [];
+    for (var p in params) {
+        if (params.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+        }
+    }
+    pramsText = "&" + str.join("&");
+    }
+    
+    return file ? localStorage.getItem('site') + link + localStorage.getItem('auth') + pramsText : localStorage.getItem('site') + '/api' + link + localStorage.getItem('auth') + pramsText;
+};
+
+const subdomain = localStorage.getItem('subdomain')
+
+export default class UploadAdapter {
+    constructor( loader ) {
+        // The file loader instance to use during the upload.
+        this.loader = loader;
+    }
+
+    // Starts the upload process.
+    upload() {
+        return this.loader.file
+            .then( file => new Promise( ( resolve, reject ) => {
+                this._initRequest();
+                this._initListeners( resolve, reject, file );
+                this._sendRequest( file );
+            } ) );
+    }
+
+    // Aborts the upload process.
+    abort() {
+        if ( this.xhr ) {
+            this.xhr.abort();
+        }
+    }
+
+    // Initializes the XMLHttpRequest object using the URL passed to the constructor.
+    _initRequest() {
+        const xhr = this.xhr = new XMLHttpRequest();
+
+        xhr.open( 'POST', linkGnirator('/files/notes'), true );
+        
+    }
+
+    // Initializes XMLHttpRequest listeners.
+    _initListeners( resolve, reject, file ) {
+        const xhr = this.xhr;
+        const loader = this.loader;
+        const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+        xhr.addEventListener( 'error', () => reject( genericErrorText ) );
+        xhr.addEventListener( 'abort', () => reject() );
+        xhr.addEventListener( 'load', () => {
+            const response = xhr.response;
+            if ( !response || response.error ) {
+                return reject( response && response.error ? response.error.message : genericErrorText );
+            }
+
+            resolve( {
+                default: linkGnirator('/companiesUploads/' + subdomain + '/notes/' + response, true)
+            } );
+        } );
+
+        if ( xhr.upload ) {
+            xhr.upload.addEventListener( 'progress', evt => {
+                if ( evt.lengthComputable ) {
+                    loader.uploadTotal = evt.total;
+                    loader.uploaded = evt.loaded;
+                }
+            } );
+        }
+    }
+
+    // Prepares the data and sends the request.
+    _sendRequest( file ) {
+        // Prepare the form data.
+        const data = new FormData();
+
+        data.append( 'file', file );
+
+        // Send the request.
+        this.xhr.send( data );
+    }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "Pioneer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^40.2.0",
+    "@ckeditor/ckeditor5-vue2": "^3.0.1",
+    "@owliehq/vue-addtohomescreen": "^2.0.3",
+    "axios": "^0.24.0",
+    "core-js": "^3.8.3",
+    "qrcode.vue": "^1.7.0",
+    "register-service-worker": "^1.7.2",
+    "vue": "^2.6.14",
+    "vue-apexcharts": "^1.6.2",
+    "vue-barcode": "^1.3.0",
+    "vue-click-outside": "^1.1.0",
+    "vue-ctk-date-time-picker": "^2.5.0",
+    "vue-custom-scrollbar": "^1.4.3",
+    "vue-i18n": "^8.3.2",
+    "vue-multiselect": "^2.1.6",
+    "vue-quill-editor": "^3.0.6",
+    "vue-router": "^3.2.0",
+    "vue2-editor": "^2.10.3"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-pwa": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "vue-template-compiler": "^2.6.14"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
